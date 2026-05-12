@@ -1,0 +1,61 @@
+[
+  {
+    "id": 1,
+    "name": "Andrea",
+    "email": "admin@andreas.com",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "name": "Maria Santos",
+    "email": "maria@email.com",
+    "password": "client123",
+    "role": "client"
+  },
+  {
+    "id": 1778571881155,
+    "name": "kenneth zabala",
+    "email": "kenneth@gmail.com",
+    "phone": "0923823813",
+    "password": "1234",
+    "role": "stylist",
+    "status": "active"
+  },
+  {
+    "id": 1778572445238,
+    "name": "kenneth zabala",
+    "email": "kenne@gmail.com",
+    "phone": "0923823813",
+    "password": "123",
+    "role": "stylist",
+    "status": "active"
+  },
+  {
+    "id": 1778574107229,
+    "name": "mar tin",
+    "email": "mar@gmail.com",
+    "phone": "03242342342",
+    "password": "123",
+    "role": "stylist",
+    "status": "rejected"
+  },
+  {
+    "id": 1778574342169,
+    "name": "[ar ty",
+    "email": "far@gmail.com",
+    "phone": "9532453543",
+    "password": "234",
+    "role": "stylist",
+    "status": "rejected"
+  },
+  {
+    "id": 1778574858331,
+    "name": "ken ken",
+    "email": "ken@gmail.com",
+    "phone": "0234234234",
+    "password": "123",
+    "role": "client",
+    "status": "active"
+  }
+]
