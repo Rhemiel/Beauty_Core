@@ -1,16 +1,7 @@
 import { Link } from 'react-router-dom'
 import ClientSidebar from '../../components/ClientSidebar'
 
-const upcomingAppts = [
-  { service:'Nail Studio', date:'Apr 10, 2026', time:'10:00 AM', status:'Confirmed' },
-  { service:'Japanese Head Spa', date:'Apr 15, 2026', time:'2:00 PM', status:'Pending' },
-]
-const recentHistory = [
-  { service:'Nail Studio', date:'Apr 7, 2026', staff:'Andrea', amount:'₱350', status:'Completed' },
-  { service:'Hair Design', date:'Mar 22, 2026', staff:'Maria', amount:'₱350', status:'Completed' },
-  { service:'Massage Therapy', date:'Mar 10, 2026', staff:'Carla', amount:'₱600', status:'Completed' },
-  { service:'Japanese Head Spa', date:'Feb 28, 2026', staff:'Jessa', amount:'₱850', status:'Completed' },
-]
+import { useState, useEffect } from 'react'
 const quickActions = [
   { to:'/client/appointments', label:'Book Appointment', sub:'Schedule your next visit' },
   { to:'/client/nail-studio', label:'Nail Studio', sub:'Browse & save nail designs' },
@@ -24,6 +15,21 @@ const thCls = "text-left font-sans text-[9px] font-bold tracking-[2px] uppercase
 const tdCls = "px-3.5 py-3 text-[#e0c8f0] border-b border-[#b040d8]/7 align-middle"
 
 export default function ClientDashboard() {
+  const [dbUpcoming, setDbUpcoming] = useState([]);
+  const [dbHistory, setDbHistory] = useState([]);
+  const [stats, setStats] = useState({ points: 0, totalSpent: '₱0' });
+
+  useEffect(() => {
+    fetch('/api/dashboard/client')
+      .then(res => res.json())
+      .then(data => {
+        if (data.upcoming) setDbUpcoming(data.upcoming);
+        if (data.history) setDbHistory(data.history);
+        if (data.stats) setStats(data.stats);
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-[#0f0520] font-sans">
       <ClientSidebar />
@@ -37,10 +43,10 @@ export default function ClientDashboard() {
           {/* Stats */}
           <div className="grid grid-cols-4 gap-5 mb-7 max-[1024px]:grid-cols-2">
             {[
-              { label:'Upcoming', value:'2', sub:'appointments' },
-              { label:'Completed', value:'14', sub:'total visits' },
-              { label:'Loyalty Points', value:'280', sub:'+ 20 this month', gold:true },
-              { label:'Total Spent', value:'₱4.2k', sub:'lifetime' },
+              { label:'Upcoming', value: dbUpcoming.length.toString(), sub:'appointments' },
+              { label:'Completed', value: dbHistory.length.toString(), sub:'total visits' },
+              { label:'Loyalty Points', value: stats.points.toString(), sub:'+ 20 this month', gold:true },
+              { label:'Total Spent', value: stats.totalSpent, sub:'lifetime' },
             ].map(s => (
               <div key={s.label} className="relative bg-[#1a0a2e] border border-[#b040d8]/15 px-6 py-[22px] overflow-hidden stat-card-accent">
                 <p className="font-sans text-[9px] font-bold tracking-[2px] uppercase text-[#9a7ab8] mb-2.5">{s.label}</p>
@@ -60,14 +66,14 @@ export default function ClientDashboard() {
               <table className="w-full text-xs border-collapse">
                 <thead><tr>{['Service','Date','Time','Status'].map(h=><th key={h} className={thCls}>{h}</th>)}</tr></thead>
                 <tbody>
-                  {upcomingAppts.map(a => (
+                  {dbUpcoming.length > 0 ? dbUpcoming.map(a => (
                     <tr key={a.service+a.date} className="hover:bg-[#b040d8]/5 transition-colors">
                       <td className={tdCls+' text-white'}>{a.service}</td>
                       <td className={tdCls}>{a.date}</td>
                       <td className={tdCls}>{a.time}</td>
                       <td className={tdCls}><Badge s={a.status} /></td>
                     </tr>
-                  ))}
+                  )) : <tr><td colSpan="4" className="text-center py-4 text-[#9a7ab8]">No upcoming appointments.</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -99,7 +105,7 @@ export default function ClientDashboard() {
             <table className="w-full text-xs border-collapse">
               <thead><tr>{['Service','Date','Staff','Amount','Status'].map(h=><th key={h} className={thCls}>{h}</th>)}</tr></thead>
               <tbody>
-                {recentHistory.map(r => (
+                {dbHistory.length > 0 ? dbHistory.map(r => (
                   <tr key={r.service+r.date} className="hover:bg-[#b040d8]/5 transition-colors">
                     <td className={tdCls+' text-white'}>{r.service}</td>
                     <td className={tdCls}>{r.date}</td>
@@ -107,7 +113,7 @@ export default function ClientDashboard() {
                     <td className={tdCls+' text-[#f0a800]'}>{r.amount}</td>
                     <td className={tdCls}><Badge s={r.status} /></td>
                   </tr>
-                ))}
+                )) : <tr><td colSpan="5" className="text-center py-4 text-[#9a7ab8]">No recent history found.</td></tr>}
               </tbody>
             </table>
           </div>

@@ -193,8 +193,8 @@ export async function POST(req: Request) {
         style,
         color,
         design,
-        // (Assuming you'll add theme/event to Drizzle schema later, if not we omit them here.
-        // For now, we'll keep inserting what the schema expects so we don't break DB inserts.)
+        theme,
+        event,
         prompt: usedPrompt,
       }).returning();
       

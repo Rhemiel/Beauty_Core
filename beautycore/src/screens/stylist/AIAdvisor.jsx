@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import ClientSidebar from '../../components/ClientSidebar'
+import StylistSidebar from '../../components/StylistSidebar'
 import { useAuth } from '../../context/AuthContext'
 
 // ── Simulated AI suggestion engine ──────────────────────────────────────────
@@ -207,7 +207,7 @@ export default function AIAdvisor() {
 
   return (
     <div className="flex min-h-screen bg-[#0f0520] font-sans">
-      <ClientSidebar />
+      <StylistSidebar />
       <div className="ml-[240px] flex-1 flex flex-col">
         {/* Topbar */}
         <header className="sticky top-0 z-50 bg-[#1a0a2e] border-b border-[#b040d8]/15 px-8 py-4 flex items-center justify-between">

@@ -2,17 +2,8 @@ import { Link } from 'react-router-dom'
 import StylistSidebar from '../../components/StylistSidebar'
 import { useAuth } from '../../context/AuthContext'
 
-const todaySchedule = [
-  { client:'Maria Santos',  service:'Nail Studio',       time:'10:00 AM', status:'Confirmed' },
-  { client:'Jessa Reyes',   service:'Hair Extension',    time:'1:00 PM',  status:'Confirmed' },
-  { client:'Ana Dela Cruz', service:'Japanese Head Spa', time:'3:30 PM',  status:'Pending'   },
-]
-const recentServices = [
-  { client:'Maria Santos',  service:'Nail Studio',  date:'May 7, 2026', amount:'₱350',  rating:5 },
-  { client:'Lena Gomez',    service:'Hair Design',  date:'May 6, 2026', amount:'₱850',  rating:5 },
-  { client:'Jessa Reyes',   service:'Nail Studio',  date:'May 5, 2026', amount:'₱350',  rating:4 },
-  { client:'Ana Dela Cruz', service:'Head Spa',     date:'May 4, 2026', amount:'₱600',  rating:5 },
-]
+import { useState, useEffect } from 'react'
+
 const quickActions = [
   { to:'/stylist/appointments', label:'My Schedule',  sub:"View today's bookings" },
   { to:'/stylist/clients',      label:'My Clients',   sub:'Client history & notes' },
@@ -46,6 +37,21 @@ export default function StylistDashboard() {
   const { user } = useAuth()
   const today = new Date().toLocaleDateString('en-PH', { weekday:'long', year:'numeric', month:'long', day:'numeric' })
 
+  const [dbTodaySchedule, setDbTodaySchedule] = useState([]);
+  const [dbRecentServices, setDbRecentServices] = useState([]);
+  const [avgRating, setAvgRating] = useState('5.0');
+
+  useEffect(() => {
+    fetch('/api/dashboard/stylist')
+      .then(res => res.json())
+      .then(data => {
+        if (data.todaySchedule) setDbTodaySchedule(data.todaySchedule);
+        if (data.recentServices) setDbRecentServices(data.recentServices);
+        if (data.avgRating) setAvgRating(data.avgRating);
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-[#1a0a2e] font-sans">
       <StylistSidebar />
@@ -68,10 +74,10 @@ export default function StylistDashboard() {
           {/* Stats */}
           <div className="grid grid-cols-4 gap-5 mb-7 max-[1024px]:grid-cols-2">
             {[
-              { label:"Today's Bookings", value:'3',   sub:'scheduled today' },
-              { label:'This Week',        value:'14',  sub:'total services' },
-              { label:'Clients Served',   value:'38',  sub:'this month', gold:true },
-              { label:'Avg. Rating',      value:'4.9', sub:'out of 5.0' },
+              { label:"Today's Bookings", value: dbTodaySchedule.length.toString(),   sub:'scheduled today' },
+              { label:'This Week',        value: (dbTodaySchedule.length + dbRecentServices.length).toString(),  sub:'total services' },
+              { label:'Clients Served',   value: dbRecentServices.length.toString(),  sub:'this month', gold:true },
+              { label:'Avg. Rating',      value: avgRating, sub:'out of 5.0' },
             ].map(s => (
               <div key={s.label} className="relative bg-[#1a0a2e] border border-[#b040d8]/15 px-6 py-[22px] overflow-hidden stat-card-accent">
                 <p className="font-sans text-[9px] font-bold tracking-[2px] uppercase text-[#9a7ab8] mb-2.5">{s.label}</p>
@@ -94,14 +100,14 @@ export default function StylistDashboard() {
               <table className="w-full text-xs border-collapse">
                 <thead><tr>{['Client','Service','Time','Status'].map(h=><th key={h} className={thCls}>{h}</th>)}</tr></thead>
                 <tbody>
-                  {todaySchedule.map(a => (
+                  {dbTodaySchedule.length > 0 ? dbTodaySchedule.map(a => (
                     <tr key={a.client+a.time} className="hover:bg-[#b040d8]/5 transition-colors">
                       <td className={tdCls+' text-white'}>{a.client}</td>
                       <td className={tdCls}>{a.service}</td>
                       <td className={tdCls}>{a.time}</td>
                       <td className={tdCls}><Badge s={a.status} /></td>
                     </tr>
-                  ))}
+                  )) : <tr><td colSpan="4" className="text-center py-4 text-[#9a7ab8]">No bookings today.</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -138,15 +144,15 @@ export default function StylistDashboard() {
             <table className="w-full text-xs border-collapse">
               <thead><tr>{['Client','Service','Date','Rating','Amount'].map(h=><th key={h} className={thCls}>{h}</th>)}</tr></thead>
               <tbody>
-                {recentServices.map((r,i) => (
+                {dbRecentServices.length > 0 ? dbRecentServices.map((r,i) => (
                   <tr key={i} className="hover:bg-[#b040d8]/5 transition-colors">
                     <td className={tdCls+' text-white'}>{r.client}</td>
                     <td className={tdCls}>{r.service}</td>
                     <td className={tdCls}>{r.date}</td>
-                    <td className={tdCls}><Stars n={r.rating} /></td>
+                    <td className={tdCls}><Stars n={r.rating || 5} /></td>
                     <td className={tdCls+' text-[#f0a800]'}>{r.amount}</td>
                   </tr>
-                ))}
+                )) : <tr><td colSpan="5" className="text-center py-4 text-[#9a7ab8]">No recent services found.</td></tr>}
               </tbody>
             </table>
           </div>

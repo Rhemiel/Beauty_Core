@@ -41,6 +41,9 @@ const icons = {
       <circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
     </svg>
   ),
+  ai: (
+    <svg className="w-[15px] h-[15px] shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="8" cy="8" r="6"/><path d="M5 8h6M8 5v6"/><circle cx="8" cy="8" r="2"/></svg>
+  ),
 }
 
 const navItems = [
@@ -55,6 +58,7 @@ const navItems = [
   { section: 'Studio', links: [
     { to: '/stylist/nail-studio',  label: 'Nail Designs',  icon: 'nail' },
     { to: '/stylist/hair-studio',  label: 'Hair Styles',   icon: 'hair' },
+    { to: '/stylist/ai-advisor',   label: 'AI Style Advisor', icon: 'ai', badge: 'NEW' },
   ]},
   { section: 'Account', links: [
     { to: '/stylist/profile',      label: 'My Profile',    icon: 'user' },

@@ -35,6 +35,7 @@ import StylistServices from './screens/stylist/Services'
 import StylistNailStudio from './screens/stylist/NailStudio'
 import StylistHairStudio from './screens/stylist/HairStudio'
 import StylistProfile from './screens/stylist/Profile'
+import StylistAIAdvisor from './screens/stylist/AIAdvisor'
 
 function ProtectedRoute({ children, role }) {
   const { user } = useAuth()
@@ -79,6 +80,7 @@ export default function App() {
       <Route path="/stylist/services"     element={<ProtectedRoute role="stylist"><StylistServices /></ProtectedRoute>} />
       <Route path="/stylist/nail-studio"  element={<ProtectedRoute role="stylist"><StylistNailStudio /></ProtectedRoute>} />
       <Route path="/stylist/hair-studio"  element={<ProtectedRoute role="stylist"><StylistHairStudio /></ProtectedRoute>} />
+      <Route path="/stylist/ai-advisor"   element={<ProtectedRoute role="stylist"><StylistAIAdvisor /></ProtectedRoute>} />
       <Route path="/stylist/profile"      element={<ProtectedRoute role="stylist"><StylistProfile /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
